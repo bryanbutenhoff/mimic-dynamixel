@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+
+  master:
+    image: "ros:kinetic-ros-base"
+    container_name: master
+    command:
+    - roscore
+
+  control_node:
+    build: control_node
+    container_name: control_node
+    depends_on:
+    - "master"
+    devices:
+    - /dev/ttyUSB0:/dev/ttyUSB0
+    environment:
+    - "TTL_DEVICE=/dev/ttyUSB0"
+    - "DXL_IDS=1,2,3,4"
+    - "ROS_HOSTNAME=control_node"
+    - "ROS_MASTER_URI=http://master:11311"
+    command: ./entrypoint.sh
+
+  servo_node:
+    build: servo_node
+    container_name: servo_node
+    depends_on:
+    - "master"
+    devices:
+    - /dev/ttyUSB1:/dev/ttyUSB1
+    environment:
+    - "TTL_DEVICE=/dev/ttyUSB1"
+    - "DXL_IDS=5,6,7,8"
+    - "ROS_HOSTNAME=servo_node"
+    - "ROS_MASTER_URI=http://master:11311"
+    command: ./entrypoint.sh
