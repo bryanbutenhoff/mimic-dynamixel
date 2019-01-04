@@ -17,7 +17,7 @@ class SubNode:
     self.usb_dynamixel = usb_dynamixel
 
   def callback(self, servo, data):
-    servo.set_goal_position(self.usb_dynamixel, data.data)
+    servo.set_goal_position(self.usb_dynamixel, 1024 - data.data)
 
   def run(self):
     # Initialize the node
